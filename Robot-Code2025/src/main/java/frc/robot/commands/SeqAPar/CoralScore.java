@@ -1,7 +1,7 @@
 package frc.robot.commands.SeqAPar;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.Setpoint;
 import frc.robot.commands.OuttakeAngle;
 import frc.robot.commands.OuttakeIntake;
@@ -15,7 +15,7 @@ public class CoralScore extends SequentialCommandGroup {
     addCommands(
         new OuttakeRotation(outtake, Setpoint.outtakeRotationScore),
         new OuttakeAngle(outtake, 0.55),
-        new WaitUntilCommand(1),
+        new WaitCommand(1),
         new OuttakeIntake(outtake, speed));
   }
 }

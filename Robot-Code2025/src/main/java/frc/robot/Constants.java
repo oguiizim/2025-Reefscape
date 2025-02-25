@@ -92,4 +92,11 @@ public final class Constants {
     // public static final double outtakeRotationNormal = 0.42;
     // public static final double creeperNormal = 0.12;
   }
+
+  public static class PIDConstants {
+    public static final double creeperP = 1.65;
+    public static final double creeperI = 0.0;
+    public static final double creeperD = 0.0;
+
+  }
 }

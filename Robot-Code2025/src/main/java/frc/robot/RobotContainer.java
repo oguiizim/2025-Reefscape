@@ -17,11 +17,12 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Drivetrain;
 import frc.robot.Constants.Setpoint;
+import frc.robot.commands.CreeperAngle;
 import frc.robot.commands.CreeperIntake;
+import frc.robot.commands.CreeperScore;
 import frc.robot.commands.ElevatorMove;
 import frc.robot.commands.OuttakeAngle;
 import frc.robot.commands.OuttakeRotation;
-import frc.robot.commands.SeqAPar.AlgaeScore;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Creeper;
 import frc.robot.subsystems.Elevator;
@@ -91,45 +92,31 @@ public class RobotContainer {
 
                 SmartDashboard.putData("Auto Chooser", autoChooser);
 
+                creeper.setDefaultCommand(new CreeperAngle(creeper, Setpoint.creeperHighPosition));
+
                 configureBindings();
         }
 
         private void configureBindings() {
                 Command driveFieldOrientedAnglularVelocity = swerve.driveFieldOriented(driveAngularVelocity);
-
                 swerve.setDefaultCommand(driveFieldOrientedAnglularVelocity);
+
                 Trigger aD = driverControl.a();
 
-                // P1 Commands
+                // Reset Swerve Gyro
                 new Trigger(aD).onTrue(Commands.runOnce(swerve::resetGyro, swerve));
 
-                driverControl.x().onTrue(new OuttakeAngle(outtake, 0.6));
-
-                driverControl.a().whileTrue(
-                                Commands.startEnd(() -> climber.setClaw(0.2), () -> climber.setClaw(0), climber));
-
-                driverControl.b().whileTrue(
-                                Commands.startEnd(() -> climber.setAngle(-0.8), () -> climber.setAngle(0), climber));
-
-                driverControl.y().whileTrue(Commands.startEnd(() -> climber.setBaseAngle(-0.5),
-                                () -> climber.setBaseAngle(0), climber));
-
+                // Intake Coral
                 opControl.a().onTrue(new OuttakeAngle(outtake, Setpoint.outtakeAngleIntake));
                 opControl.a().onTrue(new OuttakeRotation(outtake, Setpoint.outtakeRotationIntake));
                 opControl.a().whileTrue(Commands.startEnd(() -> outtake.setWheelSpeed(0.45),
                                 () -> outtake.setWheelSpeed(0.0), outtake));
 
-                opControl.b().onTrue(
-                                Commands.runOnce(() -> creeper.setTarget(Setpoint.creeperIntakePosition), creeper));
-                opControl.b().onTrue(new CreeperIntake(creeper, 0.4));
+                // Intake Algae
+                opControl.b().whileTrue(new CreeperIntake(creeper, Setpoint.creeperIntakePosition, 0.4));
 
-                opControl.x().onTrue(Commands.runOnce(() -> creeper.setTarget(Setpoint.creeperLowPosition), creeper));
-
-                opControl.rightTrigger().whileTrue(Commands.startEnd(() -> outtake.setWheelSpeed(-0.4),
-                                () -> outtake.setWheelSpeed(0.0), outtake));
-
-                opControl.leftTrigger().whileTrue(
-                                Commands.startEnd(() -> creeper.setSpeed(-0.4), () -> creeper.setSpeed(0), creeper));
+                // Score Algae
+                opControl.x().whileTrue(new CreeperScore(creeper, Setpoint.creeperLowPosition));
 
                 opControl.povUp().onTrue(new ElevatorMove(elevator, 70));
                 opControl.povUp().onTrue(new OuttakeAngle(outtake, Setpoint.outtakeAngleScoreL3));
@@ -143,6 +130,13 @@ public class RobotContainer {
 
                 opControl.back().onTrue(Commands.runOnce(() -> elevator.setZero(), elevator));
 
+                // opControl.rightTrigger().whileTrue(Commands.startEnd(() ->
+                // outtake.setWheelSpeed(-0.4),
+                // () -> outtake.setWheelSpeed(0.0), outtake));
+
+                // opControl.leftTrigger().whileTrue(
+                // Commands.startEnd(() -> creeper.setSpeed(-0.4), () -> creeper.setSpeed(0),
+                // creeper));
         }
 
         public Command getAutonomousCommand() {

@@ -67,11 +67,15 @@ public class Creeper extends SubsystemBase {
       pid.setSetpoint(setpoint);
    }
 
+   public boolean atSetpoint() {
+      return pid.atSetpoint();
+   }
+
    @Override
    public void periodic() {
-      double output = pid.calculate(getAngle());
-      output = MathUtil.clamp(output, -0.4, .4);
-      setAngleSpeed(output);
+      // double output = pid.calculate(getAngle());
+      // output = MathUtil.clamp(output, -0.4, .4);
+      // setAngleSpeed(output);
 
       SmartDashboard.putBoolean("Creeper IR", algaeIR.get());
       SmartDashboard.putNumber("Creeper Angle", angleEncoder.get());
