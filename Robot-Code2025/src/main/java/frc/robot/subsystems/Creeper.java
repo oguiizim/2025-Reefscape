@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -17,20 +18,21 @@ import frc.robot.Constants.DIO;
 import frc.robot.Constants.Motors;
 
 public class Creeper extends SubsystemBase {
-   SparkMax creeperAngle1, creeperAngle2, creeperWheel;
+   SparkMax creeperAngle1, creeperAngle2;
+   TalonFX creeperWheel;
    SparkMaxConfig angleConfig, wConfig;
    DutyCycleEncoder angleEncoder;
    DigitalInput algaeIR;
-   PIDController pid = new PIDController(1.65, 0, 0);
+   PIDController pid = new PIDController(1.0, 0, 0);
 
    public Creeper() {
       angleConfig = new SparkMaxConfig();
       wConfig = new SparkMaxConfig();
       algaeIR = new DigitalInput(DIO.sensorCreeper);
 
-      creeperAngle1 = new SparkMax(Motors.creeperAngle1, MotorType.kBrushless);
-      creeperAngle2 = new SparkMax(Motors.creeperAngle2, MotorType.kBrushless);
-      creeperWheel = new SparkMax(Motors.creeperWheel, MotorType.kBrushless);
+      creeperAngle1 = new SparkMax(Motors.creeperAngleLeft, MotorType.kBrushless);
+      creeperAngle2 = new SparkMax(Motors.creeperAngleRight, MotorType.kBrushless);
+      creeperWheel = new TalonFX(Motors.creeperWheel);
       angleEncoder = new DutyCycleEncoder(DIO.absEncoderCreeperAngle);
 
       angleConfig.inverted(false);
@@ -50,11 +52,11 @@ public class Creeper extends SubsystemBase {
    }
 
    public void setSpeed(double speed) {
-      creeperWheel.set(speed);
+      creeperWheel.set(-speed);
    }
 
    public void setAngleSpeed(double speed) {
-      creeperAngle1.set(speed);
+      creeperAngle1.set(-speed);
       creeperAngle2.set(speed);
    }
 
@@ -73,11 +75,12 @@ public class Creeper extends SubsystemBase {
 
    @Override
    public void periodic() {
-      // double output = pid.calculate(getAngle());
-      // output = MathUtil.clamp(output, -0.4, .4);
-      // setAngleSpeed(output);
 
-      SmartDashboard.putBoolean("Creeper IR", algaeIR.get());
+      double output = pid.calculate(getAngle());
+      output = MathUtil.clamp(output, -0.6, .6);
+      setAngleSpeed(output);
+
+      SmartDashboard.putBoolean("Creeper IR", getIR());
       SmartDashboard.putNumber("Creeper Angle", angleEncoder.get());
    }
 }

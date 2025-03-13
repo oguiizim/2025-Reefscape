@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -11,26 +12,10 @@ import frc.robot.Constants.Setpoint;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-  // Logger logger;
 
   private final RobotContainer m_robotContainer;
 
   public Robot() {
-    // logger.recordMetadata("2025Code", "Code");
-
-    // if (isReal()) {
-    // Logger.addDataReceiver(new WPILOGWriter());
-    // new PowerDistribution(Drivetrain.pdhID, ModuleType.kRev);
-    // } else {
-    // setUseTiming(false);
-    // String logPath = LogFileUtil.findReplayLog();
-    // Logger.setReplaySource(new WPILOGReader(logPath));
-    // Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath,
-    // "_sim")));
-    // }
-
-    // logger.start();
-
     m_robotContainer = new RobotContainer();
   }
 
@@ -49,9 +34,13 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    m_robotContainer.swerve.resetGyro();
+    m_robotContainer.outtake.setTarget(Setpoint.outtakeRotationScore);
+    m_robotContainer.outtake.setAngleTarget(Setpoint.outtakeAngleOff);
+    m_robotContainer.creeper.setTarget(Setpoint.creeperLowPosition);
 
     m_robotContainer.swerve.setMotorBrake(true);
+    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
@@ -64,8 +53,14 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    m_robotContainer.outtake.setTarget(Setpoint.outtakeRotationScore);
+    m_robotContainer.outtake.setAngleTarget(Setpoint.outtakeAngleOff);
     m_robotContainer.creeper.setTarget(Setpoint.creeperHighPosition);
+    m_robotContainer.outtake.setWheelSpeed(0);
+    m_robotContainer.creeper.setSpeed(0);
+
     m_robotContainer.setMotorBrake(true);
+    m_robotContainer.setHeadingCorrection(true);
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();

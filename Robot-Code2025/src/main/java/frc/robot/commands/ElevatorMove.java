@@ -14,30 +14,31 @@ public class ElevatorMove extends Command {
   public ElevatorMove(Elevator elevator, double setpoint) {
     this.elevator = elevator;
     this.setpoint = setpoint;
-    pid = new PIDController(0.5, 0.0, 0.0);
-    pid.setTolerance(1);
+    pid = new PIDController(0.1, 0.0, 0.0);
+    pid.setTolerance(100);
 
     addRequirements(elevator);
   }
 
   @Override
   public void execute() {
-    double outputR = pid.calculate(elevator.getEncoderR(), -setpoint);
-    double outputL = pid.calculate(elevator.getEncoderL(), setpoint);
+    double outputR = pid.calculate(elevator.getEncoder(), setpoint);
 
-    outputL = MathUtil.clamp(outputL, -0.4, 0.4);
-    outputR = MathUtil.clamp(outputR, -0.4, 0.4);
+    outputR = MathUtil.clamp(outputR, -0.6, 0.8);
 
-    elevator.setSpeed(-outputR, outputL);
-    // elevator.setSpeed(0.2, 0.2);
+    elevator.setSpeed(outputR, outputR);
+
+    if (elevator.getVelocity() != 0 && elevator.getEncoder() == 0) {
+      elevator.setSpeed(0, 0);
+      System.out.println("Elevator Encoder is disconnected");
+    }
 
     SmartDashboard.putNumber("OutputR", outputR);
-    SmartDashboard.putNumber("OutputL", outputL);
   }
 
   @Override
   public void end(boolean interrupted) {
-    // elevator.stop();
+    elevator.stop();
   }
 
   @Override
