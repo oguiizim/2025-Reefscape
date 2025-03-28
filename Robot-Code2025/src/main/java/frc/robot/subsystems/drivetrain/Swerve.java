@@ -12,15 +12,12 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
-import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.networktables.DoubleArrayEntry;
-import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -51,9 +48,6 @@ public class Swerve extends SubsystemBase {
 
     public Swerve(File directory) {
 
-        double angleConversion = SwerveMath.calculateDegreesPerSteeringRotation(21.43);
-        double driveConversion = SwerveMath.calculateMetersPerRotation(Units.inchesToMeters(4), 6.75);
-
         SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
 
         try {
@@ -74,14 +68,6 @@ public class Swerve extends SubsystemBase {
         swerveDrive.setModuleEncoderAutoSynchronize(false, 1);
         swerveDrive.pushOffsetsToEncoders();
 
-        LimelightHelpers.setCameraPose_RobotSpace("",
-                0.34, // Forward offset (meters)
-                0.0, // Side offset (meters)
-                0.155, // Height offset (meters)
-                0.0, // Roll (degrees)
-                60, // Pitch (degrees)
-                0.0 // Yaw (degrees)
-        );
         setupPathPlanner();
     }
 
@@ -93,54 +79,8 @@ public class Swerve extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // if (!DriverStation.isAutonomousEnabled()) {
-        // // updateVisionOdometry();
-        // doRejectUpdate = true;
-        // } else {
-        // updateVisionOdometry();
-        // }
         swerveDrive.updateOdometry();
         SmartDashboard.putData(field);
-
-        boolean alliance = true; // True for red, false for blue
-        if (alliance) {
-            int[] validIDS = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 };
-            this.validIDS = validIDS;
-        } else {
-            int[] validIDS = { 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22 };
-            this.validIDS = validIDS;
-        }
-
-        // LimelightHelpers.SetFiducialIDFiltersOverride("", validIDS);
-        // LimelightHelpers.setPipelineIndex("", 0);
-
-        // double[] targetPoseRobotSpace = botPose("targetpose_robotspace");
-    }
-
-    public void updateVisionOdometry() {
-
-        LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
-
-        if (mt1.tagCount == 1 && mt1.rawFiducials.length == 1) {
-            if (mt1.rawFiducials[0].ambiguity > .7) {
-                doRejectUpdate = true;
-            }
-            if (mt1.rawFiducials[0].distToCamera > 3) {
-                doRejectUpdate = true;
-            }
-        }
-        if (mt1.tagCount == 0) {
-            doRejectUpdate = true;
-        }
-
-        if (!doRejectUpdate) {
-            swerveDrive.swerveDrivePoseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5, .5, 9999999));
-            swerveDrive.addVisionMeasurement(
-                    mt1.pose,
-                    mt1.timestampSeconds);
-        }
-        field.setRobotPose(mt1.pose);
-
     }
 
     public double[] botPose(String entry) {
@@ -266,9 +206,6 @@ public class Swerve extends SubsystemBase {
         return run(() -> {
 
             double out = pidAngle.calculate(getHeading().getRadians(), Units.degreesToRadians(setpoint));
-            double angVelocity = swerveDrive.swerveController.headingCalculate(getHeading().getRadians(),
-                    Units.degreesToRadians(setpoint));
-
             ChassisSpeeds goalVelocity = new ChassisSpeeds(0, 0, out);
             swerveDrive.driveFieldOriented(goalVelocity);
             pidAngle.atSetpoint();

@@ -5,51 +5,27 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "elevatorL4"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Path1 Processor"
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "Path2 Processor"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.1
-          }
-        },
-        {
           "type": "named",
           "data": {
-            "name": "spinAlgae"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.1
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "stopMotor"
+            "name": "scoreL4"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Path3 Processor"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "scoreL1"
+            "pathName": "Path2 Processor"
           }
         }
       ]

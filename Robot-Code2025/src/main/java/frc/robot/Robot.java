@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -37,7 +36,6 @@ public class Robot extends TimedRobot {
     m_robotContainer.swerve.resetGyro();
     m_robotContainer.outtake.setTarget(Setpoint.outtakeRotationScore);
     m_robotContainer.outtake.setAngleTarget(Setpoint.outtakeAngleOff);
-    m_robotContainer.creeper.setTarget(Setpoint.creeperLowPosition);
 
     m_robotContainer.swerve.setMotorBrake(true);
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
@@ -55,9 +53,7 @@ public class Robot extends TimedRobot {
   public void teleopInit() {
     m_robotContainer.outtake.setTarget(Setpoint.outtakeRotationScore);
     m_robotContainer.outtake.setAngleTarget(Setpoint.outtakeAngleOff);
-    m_robotContainer.creeper.setTarget(Setpoint.creeperHighPosition);
     m_robotContainer.outtake.setWheelSpeed(0);
-    m_robotContainer.creeper.setSpeed(0);
 
     m_robotContainer.setMotorBrake(true);
     m_robotContainer.setHeadingCorrection(true);

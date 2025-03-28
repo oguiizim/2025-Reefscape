@@ -97,12 +97,14 @@ public class Outtake extends SubsystemBase {
         setRotationSpeed(MathUtil.clamp(outputRotation, -0.1, 0.1));
 
         double outputAngle = pidAngle.calculate(getAngleEncoder());
-        setAngleSpeed(MathUtil.clamp(outputAngle, -0.2, 0.2));
+        setAngleSpeed(MathUtil.clamp(outputAngle, -0.2, 0.4));
+        
         if (getAngleSetpoint() == Setpoint.outtakeAngleOff) {
             double outputReturn = newPidAngle.calculate(getAngleEncoder(),
                     Setpoint.outtakeAngleOff);
             setAngleSpeed(MathUtil.clamp(outputReturn, -0.2, 0.2));
         }
+
         if (getAngleSetpoint() <= getAngleEncoder()) {
             double outputDown = newPidAngle.calculate(getAngleEncoder(),
                     getAngleSetpoint());
@@ -112,5 +114,6 @@ public class Outtake extends SubsystemBase {
         SmartDashboard.putNumber("Outtake Rotation", getRotationEncoder());
         SmartDashboard.putNumber("Outtake Angle", getAngleEncoder());
         SmartDashboard.putBoolean("Outtake IR", getIR());
+        SmartDashboard.putBoolean("IsTrue", outtakeAngleEncoder.isConnected());
     }
 }

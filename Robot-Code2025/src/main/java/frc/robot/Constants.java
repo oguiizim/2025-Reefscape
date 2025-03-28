@@ -44,9 +44,7 @@ public final class Constants {
     public static final int outtakeRotation = 10; // DONE
     public static final int outtakeAngle = 11; // DONE
 
-    public static final int creeperWheel = 12; // DONE
-    public static final int creeperAngleLeft = 13; // DONE
-    public static final int creeperAngleRight = 19; // DONE
+    public static final int climberMotor = 12; // DONE
     
     public static final int elevatorR = 14; // DONE
     public static final int elevatorL = 15; // DONE
@@ -57,42 +55,24 @@ public final class Constants {
     public static final int absEncoderOuttakeAngle = 1;
     public static final int sensorOuttake = 5;
 
-    public static final int absEncoderCreeperAngle = 2;
-    public static final int sensorCreeper = 9;
-
     public static final int elevatorP1 = 3;
     public static final int elevatorP2 = 4;
   }
 
   public static class Setpoint {
-    // Max = 0.68
-    // Min = 0.88
-    private static final double creeperNormal = 0.545;
-    public static final double creeperHighPosition = creeperNormal - 0.18; // Creeper Normal - 0.232
-    public static final double creeperIntakePosition = creeperNormal - 0.1; // Creeper Normal - 0.1
-    public static final double creeperIntakePosition2 = creeperNormal - 0.14; // Creeper Normal - 0.1
-    public static final double creeperLowPosition = creeperNormal - 0.032;
-    public static final double creeperScorePosition = creeperNormal - 0.029;
-
     private static final double outtakeRotationNormal = 0.25;
-    public static final double outtakeRotationScore = 0.25;
-    public static final double outtakeRotationIntake = 0.52;
+    public static final double outtakeRotationScore = 0.412;
+    public static final double outtakeRotationIntake = 0.15;
 
-    private static final double outtakeAngleNormal = 0.446;
+    private static final double outtakeAngleNormal = 0.431;
     public static final double outtakeAngleIntake = outtakeAngleNormal + 0.33; // Angle Normal + 0.339
     public static final double outtakeAngleScoreL1 = outtakeAngleNormal + 0.2;
     public static final double outtakeAngleScoreL2 = outtakeAngleNormal + 0.33;
     public static final double outtakeAngleScoreL3 = outtakeAngleNormal + 0.4;
-    public static final double outtakeAngleScoreL4 = outtakeAngleNormal + 0.38;
+    public static final double outtakeAngleScoreL4 = outtakeAngleNormal + 0.39;
     public static final double outtakeAngleOff = outtakeAngleNormal + 0.12; // Angle Normal + 0.024
 
     public static final double distanceRobotToReef = 1.0;
-  }
-
-  public static final class PIDConstants {
-    public static final double creeperP = 1.5;
-    public static final double creeperI = 0.0;
-    public static final double creeperD = 0.0;
   }
 
   public static final class Strings {

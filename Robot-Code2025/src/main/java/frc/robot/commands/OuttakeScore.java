@@ -25,6 +25,6 @@ public class OuttakeScore extends Command {
 
    @Override
    public boolean isFinished() {
-      return !outtake.getIR();
+      return false;
    }
 }
